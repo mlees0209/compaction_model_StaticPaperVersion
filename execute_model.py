@@ -191,6 +191,10 @@ internal_time_delay,overwrite,run_name,output_folder,outdestination = read_param
 
 if MODE=='resume':
     resume_directory=read_parameter('resume_directory',str,1,paramfilelines)
+    resume_date=read_parameter('resume_date',str,1,paramfilelines)
+    if resume_date==None:
+        print('\tERROR: No resume_date set; terminal.')
+        sys.exit(1)
     print('')
     print('MODE is RESUME; reading all non-admin parameters from paramfile %s' % (resume_directory+'/paramfile.par'))
     copy2('%s/paramfile.par' % resume_directory,"%s/resume_paramfile.par" % outdestination)
