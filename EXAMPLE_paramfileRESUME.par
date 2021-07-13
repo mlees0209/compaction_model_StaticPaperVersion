@@ -1,0 +1,63 @@
+### MODEL INPUT PARAMETER FILE -- RESUMED RUN ###
+# This example parameter file shows how the various options were selected for RESUME runs used for the paper. These runs are the ones which resumed from a given date, then continued with constant head in both aquifers.  General rules for inputs are: avoid blankspaces wherever possible, where multiple inputs are required for a single variable use a comma to separate, and where different values apply for different layers, use the format: "LAYERNAME1:VALUE1,LAYERNAME2:VALUE2". For variables requiring a binary true/false type value, I should have coded it up so that either strings "True" or "False" work, or equally "1" or "0".
+
+## RESUME OPTIONS: these parameters must be prepended to the full run paramfile!!
+mode=resume
+resume_head_value=Upper Aquifer:cst,Lower Aquifer1:cst # Options for what head value to resume with; should be 'cut'.
+resume_directory=FULLRUNNAME # Location of directory containing the full run; we will resume at a point in this directory.
+resume_date=May-01-1986 # Date at which to resume from.
+
+## Full run paramfile goes below here, unchanged! 
+## Admin
+run_name=Clay39Sskv3e-3Kv5e-7di50preconsheadupper13lower21_RESUME_May-01-1986
+output_folder=/home/mlees/Land_Subsidence/Local_Scale/Model_runs/ParamSpaceSweep_May6ACCEPTED
+overwrite=False # If the output folder already exists, do you want to overwrite? NB you must confirm manually if this is the case.
+internal_time_delay=0.1 # This is the time delay in seconds between sections of the solver.
+save_effective_stress=True
+
+## Hydrostratigraphy
+no_layers=3 # this is the number of layers in your model
+layer_names=Upper Aquifer,Corcoran Clay,Lower Aquifer1 # these are the names of the layers in your model, which also define the order of the layers, the first named layer being the topmost.
+layer_types=Upper Aquifer:Aquifer,Corcoran Clay:Aquitard,Lower Aquifer1:Aquifer # for each named layer, give whether it is an aquifer or aquitard.
+layer_thickness_types=Upper Aquifer:constant,Corcoran Clay:constant,Lower Aquifer1:constant
+layer_thicknesses=Upper Aquifer:50,Corcoran Clay:25,Lower Aquifer1:123
+layer_compaction_switch=Upper Aquifer: 1,Corcoran Clay: 1,Lower Aquifer1: 1 # for each named layer, specify whether it can compact.
+
+## Deal with interbedded clays
+interbeds_switch=Upper Aquifer: 1,Lower Aquifer1: 1 # for each aquifer layer, specify whether they will contain interbedded clays. 
+interbeds_distributions=Upper Aquifer:{3:2,19:1},Lower Aquifer1:{5:2.46,15:4.92}
+#interbeds_type=Upper Aquifer: Equivalent, Lower Aquifer: Equivalent # for each aquifer layer containing interbeds, specify whether they will have a single equivalent clay thickness.
+
+## Hydrologic parameters
+#clay_Ssk=Corcoran Clay:5e-5 # Singlevalue Ssk for each compacting layer; only used if compaction or groundwater flow equations are solved using 'singlevalue').
+clay_Sse=Upper Aquifer:1.2e-5,Corcoran Clay:1.2e-5,Lower Aquifer1:1.2e-5
+clay_Ssv=Upper Aquifer:3e-3,Corcoran Clay:3e-3,Lower Aquifer1:3e-3
+sand_Sse=Upper Aquifer:3.3e-6,Lower Aquifer1:3.3e-6  # Sse for each compacting aquifer layer, for the connected matrix.
+#clay_porosity=Corcoran Clay:0.5 # I don't think this is needed??
+#sand_Ssk=Lower Aquifer1:0,Lower Aquifer:0,Upper Aquifer:0
+compressibility_of_water=1.5e-6 # REFERENCE: Faunt 2009 P175; Freeze and Cherry p52 (multiply by rho g n); Smith et al 2017 (P3). Needed to convert Sse and Sskv into Sske and Sskv respectively.
+vertical_conductivity=Upper Aquifer:5e-7,Corcoran Clay:5e-7,Lower Aquifer1:5e-7
+
+
+## Options for solving the groundwater flow equation
+dt_master=Upper Aquifer:0.2,Corcoran Clay:0.5,Lower Aquifer1:0.2
+dz_clays=Upper Aquifer:0.2,Corcoran Clay:0.5,Lower Aquifer1:0.2 # spatial discretization within all clay layers. Units=metres
+groundwater_flow_solver_type=Upper Aquifer:elastic-inelastic,Corcoran Clay:elastic-inelastic,Lower Aquifer1:elastic-inelastic
+overburden_stress_gwflow=True # True or false whether you want to consider overburden stress in the groundwater flow solution
+preconsolidation_head_type=initial_plus_offset
+preconsolidation_head_offset=Upper Aquifer:13,Lower Aquifer1:21
+
+## Options for solving the compaction equations
+compaction_solver_compressibility_type=Corcoran Clay:elastic-inelastic
+overburden_stress_compaction =True # True or false whether you want to consider overburden stress in the compaction solver flow solution
+
+## Input head time series
+
+head_data_files=Upper Aquifer:/home/mlees/Dropbox/1DCompactionModels/PreparingData/head_data/SouthHanford_Interpolated_Shallow_Timeseries_Apr8ZIGZAG_includeAugust.csv,Lower Aquifer1:/home/mlees/Dropbox/1DCompactionModels/PreparingData/head_data/SouthHanford_Interpolated_Deep_Timeseries_Apr1ZIGZAG_includeAugust.csv
+
+
+## Output options
+
+save_internal_compaction=False
+save_output_head_timeseries=True
+create_output_head_video=Upper Aquifer:False,Corcoran Clay:False,Lower Aquifer1:False
